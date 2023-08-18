@@ -68,7 +68,7 @@ module.exports.addUser = (req, res) => {
 				  .then(user => res.json(user))
 				  .catch(err => console.log(err))
 
-				res.json(user);
+				return res.json(user);
 			});
 
 		//res.json({id:User.find().count()+1,...req.body})
