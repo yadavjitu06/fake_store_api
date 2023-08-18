@@ -77,19 +77,38 @@ module.exports.addCart = (req, res) => {
 	}
 };
 
-module.exports.editCart = (req, res) => {
-	if (typeof req.body == undefined || req.params.id == null) {
+module.exports.editCart = async (req, res) => {
+	if (typeof req.body == undefined ) {
 		res.json({
 			status: 'error',
 			message: 'something went wrong! check your sent data',
 		});
 	} else {
-		res.json({
-			id: parseInt(req.params.id),
-			userId: req.body.userId,
-			date: req.body.date,
-			products: req.body.products,
+		let cart = await Cart.findOne({userId: req.body.userId});
+		console.log(cart);
+		if(!cart) {
+			const cartCount = await Cart.find({}).countDocuments();
+			cart = new Cart({
+				id: cartCount+1,
+				userId: req.body.userId,
+				products: [],
+				date: new Date()
+			});
+		}
+		console.log(cart);
+
+		let foundProduct = false;
+		cart.products = cart.products.map(product => {
+			if(product.id == req.body.productId) {
+				product.quantity++;
+				foundProduct = true;
+			}
 		});
+		if(!foundProduct) {
+			cart.products.push({productId: req.body.productId, quantity: 1});
+		}
+		await cart.save();
+		return res.json(cart);
 	}
 };
 
