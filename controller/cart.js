@@ -99,10 +99,11 @@ module.exports.editCart = async (req, res) => {
 
 		let foundProduct = false;
 		cart.products = cart.products.map(product => {
-			if(product.id == req.body.productId) {
+			if(product.productId == req.body.productId) {
 				product.quantity++;
 				foundProduct = true;
 			}
+			return product;
 		});
 		if(!foundProduct) {
 			cart.products.push({productId: req.body.productId, quantity: 1});
