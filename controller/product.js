@@ -9,6 +9,7 @@ module.exports.getAllProducts = (req, res) => {
 		.limit(limit)
 		.sort({ id: sort })
 		.then((products) => {
+			console.log(products)
 			res.json(products);
 		})
 		.catch((err) => console.log(err));

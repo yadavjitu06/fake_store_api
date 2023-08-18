@@ -9,7 +9,6 @@ module.exports.getAllCarts = (req, res) => {
 	console.log(startDate, endDate);
 
 	Cart.find({
-		date: { $gte: new Date(startDate), $lt: new Date(endDate) },
 	})
 		.select('-_id -products._id')
 		.limit(limit)
