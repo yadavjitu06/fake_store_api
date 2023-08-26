@@ -12,8 +12,13 @@ module.exports.login = (req, res) => {
 		})
 			.then((user) => {
 				if (user) {
-					return res.json({
-						token: jwt.sign({ user: username, id: user.id }, 'secret_key'),
+					const t=jwt.sign({ user: username, id: user.id }, 'secret_key');
+
+					return res.cookie('jwt-token', t, {
+						httpOnly: true,
+						maxAge: 3600000, // 1 hour expiration time (in milliseconds)
+					}).json({
+						token: t,
 					});
 				} else {
 					res.status(401);

@@ -7,9 +7,11 @@ const dotenv = require('dotenv');
 const dotenvExpand = require('dotenv-expand');
 const myEnv = dotenv.config();
 dotenvExpand.expand(myEnv);
+var cookies = require("cookie-parser");
 
 //app
 const app = express();
+app.use(cookies());
 
 //port
 const port = process.env.PORT || 6400;
@@ -22,7 +24,12 @@ const userRoute = require('./routes/user');
 const authRoute = require('./routes/auth');
 
 //middleware
-app.use(cors());
+const corsOptions = {
+	origin: 'http://localhost:5173', // Replace with your React app's origin
+	credentials: true, // Enable credentials (cookies) in cross-origin requests
+};
+  
+app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.urlencoded({ extended: true }));
@@ -39,6 +46,16 @@ app.use('/products', productRoute);
 app.use('/carts', cartRoute);
 app.use('/users', userRoute);
 app.use('/auth', authRoute);
+
+app.get('/accesstoken', (req, res) => {
+	console.log("cookie",req.cookies);
+	return res.json({token: req.cookies['jwt-token']});
+});
+
+app.get('/logout', (req, res) => {
+	res.clearCookie('jwt-token');
+	return res.status(200).json({msg: 'logout done'});
+})
 
 //mongoose
 mongoose.set('useFindAndModify', false);

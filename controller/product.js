@@ -29,6 +29,7 @@ module.exports.getProduct = (req, res) => {
 };
 
 module.exports.getProductCategories = (req, res) => {
+	console.log(req.cookies);
 	Product.distinct('category')
 		.then((categories) => {
 			res.json(categories);
