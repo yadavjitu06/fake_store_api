@@ -27,7 +27,6 @@ module.exports.getCartsbyUserid = (req, res) => {
 	console.log(startDate, endDate);
 	Cart.find({
 		userId,
-		date: { $gte: new Date(startDate), $lt: new Date(endDate) },
 	})
 		.select('-_id -products._id')
 		.then((carts) => {
