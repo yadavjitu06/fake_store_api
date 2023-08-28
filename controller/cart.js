@@ -111,6 +111,40 @@ module.exports.editCart = async (req, res) => {
 	}
 };
 
+module.exports.updateProductToCart = async (req, res) => {
+	if (typeof req.body == undefined ) {
+		res.json({
+			status: 'error',
+			message: 'something went wrong! check your sent data',
+		});
+	} else {
+		let cart = await Cart.findOne({userId: req.body.userId});
+		console.log(cart);
+		if(!cart) {
+			return res.status(404).json({
+				data: {},
+				message: 'no cart found for the user'
+			})
+		}
+		console.log(cart);
+
+		let foundProduct = false;
+		cart.products = cart.products.map(product => {
+			if(product.productId == req.body.productId) {
+				product.quantity = req.body.quantity;
+				foundProduct = true;
+			}
+			return product;
+		});
+		if(!foundProduct) {
+			cart.products.push({productId: req.body.productId, quantity: req.body.quantity});
+		}
+		cart.products = cart.products.filter(product => product.quantity != 0);
+		await cart.save();
+		return res.json(cart);
+	}
+};
+
 module.exports.deleteCart = (req, res) => {
 	if (req.params.id == null) {
 		res.json({
