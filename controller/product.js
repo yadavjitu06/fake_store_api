@@ -9,7 +9,9 @@ module.exports.getAllProducts = (req, res) => {
 		.limit(limit)
 		.sort({ id: sort })
 		.then((products) => {
-			console.log(products)
+
+			console.log("Fetched Products from DB:", products)
+			
 			res.json(products);
 		})
 		.catch((err) => console.log(err));
